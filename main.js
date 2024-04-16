@@ -7,15 +7,17 @@ import fragmentShader from './shaders/fragmentShader.glsl'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 // import { RGBELoader } from 'three/addons/loaders/RGBELoader.js';
 // import { MTLLoader } from 'three/addons/loaders/MTLLoader.js';
-
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
 let clock, mixer, scene, renderer, camera, controls;
 let floor;
 let wizard_model, wizard_skeleton;
 
-init();
-
+// init();
+document.getElementById('playButton').addEventListener('click',function(){
+	init();
+	document.querySelector('.titleScreen').style.display = 'none';
+});
 animate();
 
 function init() {
@@ -23,7 +25,8 @@ function init() {
 	clock = new THREE.Clock();
 	renderer = new THREE.WebGLRenderer({
 		antialias: true,
-		canvas: document.querySelector('#bg'),
+		canvas: document.querySelector('#threejs'),
+		alpha: true,
 	});
 
 	renderer.setPixelRatio(window.devicePixelRatio);
@@ -33,24 +36,16 @@ function init() {
 
 	scene = new THREE.Scene();
 	const spaceTexture = new THREE.TextureLoader().load('./textures/space.jpg');
-	scene.background = spaceTexture;
+	//scene.background = spaceTexture;
 
 	camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 10000);
-	camera.position.set(220, 200, 0);
-	controls = new OrbitControls(camera, renderer.domElement);
-	controls.target.set(0, 50, 0);
-	controls.update();
-	controls.enablePan = false;
-	controls.enableDamping = true;
-	camera.lookAt(0.0, 10, 0.0);
-	//camera.lookAt(0.0,100.0,0.0);
-
-	// const axesHelper = new THREE.AxesHelper( 30 );
-	// scene.add( axesHelper );
-
-	// const light = new THREE.PointLight(0xffffff, 20000)
-	// light.position.set(0.8, 1.4, 1.0)
-	// scene.add(light)
+	camera.position.set(150, 200, 0);
+	// controls = new OrbitControls(camera, renderer.domElement);
+	// controls.target.set(0, 150, 0);
+	// controls.update();
+	// controls.enablePan = false;
+	// controls.enableDamping = true;
+	camera.lookAt(0, 150, 0);
 
 	const light = new THREE.SpotLight(0xffffff, 2000000);
 	light.position.set(100, 1000, 0);
@@ -65,27 +60,32 @@ function init() {
 
 	//----------------------------------------NATIVE OBJECTS-------------------------------------------------------
 
-	const stone_texture = new THREE.TextureLoader().load('./textures/stone-texture.jpg')
-	const table_geometry = new THREE.BoxGeometry(250, 5, 300);
-	const table_material = new THREE.MeshLambertMaterial({ map: stone_texture });
-	const table = new THREE.Mesh(table_geometry, table_material);
+	let stone_texture = new THREE.TextureLoader().load('./textures/stone-texture.jpg')
+	let table_geometry = new THREE.BoxGeometry(200, 5, 300);
+	let table_material = new THREE.MeshLambertMaterial({ map: stone_texture });
+	let table = new THREE.Mesh(table_geometry, table_material);
 	table.receiveShadow = true;
-	table.position.set(0, 100, 0)
+	table.position.set(0, 90, 0)
 	scene.add(table);
 
-	const floor_texture = new THREE.TextureLoader().load('./textures/vortex.jpg')
-	const floor_geometry = new THREE.CircleGeometry(256, 64);
-	const floor_material = new THREE.MeshBasicMaterial({ map: floor_texture, side: THREE.DoubleSide });
+	let floor_texture = new THREE.TextureLoader().load('./textures/vortex.jpg')
+	let floor_geometry = new THREE.PlaneGeometry(1024, 1024);
+	let floor_material = new THREE.MeshBasicMaterial({ map: floor_texture, side: THREE.DoubleSide });
 	floor = new THREE.Mesh(floor_geometry, floor_material);
 	floor.receiveShadow = true;
 	floor.rotateX(Math.PI / 2)
 	scene.add(floor);
 
-
+	let room_geometry = new THREE.BoxGeometry(512,512,512);
+	let room_material = new THREE.MeshLambertMaterial({map: stone_texture, side: THREE.DoubleSide})
+	let room = new THREE.Mesh(room_geometry,room_material);
+	room.receiveShadow = true;
+	room.position.set(0,254,0)
+	scene.add(room);
 
 	//---------------------------------MODEL IMPORTS--------------------------------------------------------------
 
-	let spell = launchSpell('pyroball','player');
+	let spell = launchSpell('leaftornado','player');
 
 	let wizard_texture = new THREE.TextureLoader().load('./textures/56x56texture.png');
 
@@ -94,7 +94,7 @@ function init() {
 	wizard_loader.load('models/Wizard-Finished.glb', function (wizard) {
 		wizard.scene = wizard.scene;
 		wizard.scene.scale.set(100, 100, 100);
-		wizard.scene.position.set(-150, 0, 0);
+		wizard.scene.position.set(-150, 2, 0);
 		wizard.scene.rotateY(Math.PI / 2);
 		wizard.scene.receiveShadow = true;
 		scene.add(wizard.scene);
@@ -173,7 +173,7 @@ function animate() {
 
 	mixer.update(delta);
 	floor.rotateZ(-0.001);
-	controls.update();
+	// controls.update();
 
 	renderer.render(scene, camera);
 
@@ -196,8 +196,8 @@ function createPyroball(x,y,z) {
 	{
 		uniforms:
 		{
-			"c": {type: "f", value: 0.2},
-			"p": {type: "f", value: 4.0},
+			"c": {type: "f", value: 0.4},
+			"p": {type: "f", value: 2.0},
 			glowColor: {type: "c", value: new THREE.Color(0xfbb741)},
 			viewVector: {type: "v3", value: camera.position},
 		},
@@ -254,12 +254,17 @@ function createWaterPulse(x,y,z) {
 }
 
 function createLeafStorm(x,y,z) {
-	const leaf_texture = new THREE.TextureLoader().load('./textures/ice_crystal.jpg');
-	const storm = new THREE.ConeGeometry(30, 40, 32, 32, 8, 1);
-	const leaf = new THREE.MeshBasicMaterial({ map: leaf_texture, side: THREE.DoubleSide });
-	const leafstorm = new THREE.Mesh(storm, leaf);
-	leafstorm.rotateZ(Math.PI);
-	leafstorm.position.set(x,y,z);
+	let leafstorm = new THREE.Group();
+	let tornado_loader = new GLTFLoader();
+
+	tornado_loader.load('models/leaf_tornado.glb', function (object) {
+		let tornado = object.scene;
+		object.scene.scale.set(100, 75, 100);
+		object.scene.position.set(x,y,z);
+		leafstorm.add(tornado);
+	}, undefined, function (error) {
+		console.error(error);
+	});
 	leafstorm.castShadow = true;
 	scene.add(leafstorm);
 	return leafstorm;
