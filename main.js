@@ -1,7 +1,7 @@
-import '/wizard_showdown/style.css';
+import '/style.css';
 import * as THREE from 'three';
-import vertexShader from '/wizard_showdown/shaders/vertexShader.glsl'
-import fragmentShader from '/wizard_showdown/shaders/fragmentShader.glsl'
+import vertexShader from '/shaders/vertexShader.glsl'
+import fragmentShader from '/shaders/fragmentShader.glsl'
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader';
 // import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
@@ -58,7 +58,7 @@ function init() {
 
 
 	scene = new THREE.Scene();
-	const spaceTexture = new THREE.TextureLoader().load('/wizard_showdown/textures/space.jpg');
+	const spaceTexture = new THREE.TextureLoader().load('/textures/space.jpg');
 	//scene.background = spaceTexture;
 
 	camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 10000);
@@ -78,7 +78,7 @@ function init() {
 
 	//----------------------------------------NATIVE OBJECTS-------------------------------------------------------
 
-	const stone_texture = new THREE.TextureLoader().load('/wizard_showdown/textures/stone-texture.jpg')
+	const stone_texture = new THREE.TextureLoader().load('/textures/stone-texture.jpg')
 	const table_geometry = new THREE.BoxGeometry(200, 5, 300);
 	const table_material = new THREE.MeshLambertMaterial({ map: stone_texture });
 	const table = new THREE.Mesh(table_geometry, table_material);
@@ -87,7 +87,7 @@ function init() {
 	table.position.set(0, 90, 0)
 	scene.add(table);
 
-	const floor_texture = new THREE.TextureLoader().load('/wizard_showdown/textures/vortex.jpg')
+	const floor_texture = new THREE.TextureLoader().load('/textures/vortex.jpg')
 	const floor_geometry = new THREE.PlaneGeometry(1024, 1024);
 	const floor_material = new THREE.MeshBasicMaterial({ map: floor_texture, side: THREE.DoubleSide });
 	floor = new THREE.Mesh(floor_geometry, floor_material);
@@ -107,7 +107,7 @@ function init() {
 	importWizard();
 	importClock();
 
-	//const book_texture = new THREE.TextureLoader().load('/wizard_showdown/textures/book.png' ); 
+	//const book_texture = new THREE.TextureLoader().load('textures/book.png' ); 
 
 	window.onresize = function () {
 
@@ -172,7 +172,7 @@ function createFireBlast(x, y, z, r) {
 	let fireblast = new THREE.Group();
 	let fireball_loader = new GLTFLoader();
 
-	fireball_loader.load('/wizard_showdown/models/spells/fireball.glb', function (fireball) {
+	fireball_loader.load('/models/spells/fireball.glb', function (fireball) {
 		let energyball = fireball.scene;
 		fireball.scene.scale.set(2, 2, 2);
 		fireball.scene.position.set(x, y, z);
@@ -204,7 +204,7 @@ function createFireBlast(x, y, z, r) {
 }
 
 function createWaterPulse(x, y, z, r) {
-	// const water_texture = new THREE.TextureLoader().load('/wizard_showdown/textures/ice_crystal.jpg');
+	// const water_texture = new THREE.TextureLoader().load('textures/ice_crystal.jpg');
 	const pulse = new THREE.TorusGeometry(35, 3);
 	const water = new THREE.MeshBasicMaterial({ color: "#d4f1f9", side: THREE.DoubleSide });
 	const waterpulse1 = new THREE.Mesh(pulse, water);
@@ -239,7 +239,7 @@ function createLeafStorm(x, y, z, r) {
 	let leafstorm = new THREE.Group();
 	let tornado_loader = new GLTFLoader();
 
-	tornado_loader.load('/wizard_showdown/models/spells/leaf_tornado.glb', function (object) {
+	tornado_loader.load('/models/spells/leaf_tornado.glb', function (object) {
 		let tornado = object.scene;
 		object.scene.scale.set(100, 75, 100);
 		object.scene.position.set(x, y, z);
@@ -275,7 +275,7 @@ function launchSpell(spell, user) {
 
 function importWizard() {
 	const fbxLoader = new FBXLoader()
-	fbxLoader.load('/wizard_showdown/models/Standing Block React Large.fbx', function (wizard) {
+	fbxLoader.load('/models/Standing Block React Large.fbx', function (wizard) {
 		wizard.scale.set(1, 1, 1)
 		wizard.receiveShadow = true;
 		wizard.position.set(-150, 2, 0);
@@ -303,10 +303,10 @@ function importWizard() {
 }
 
 function importClock() {
-	const clock_texture = new THREE.TextureLoader().load('/wizard_showdown/textures/clock_base.png');
+	const clock_texture = new THREE.TextureLoader().load('/textures/clock_base.png');
 	console.log(clock_texture)
 	const fbxLoader = new FBXLoader()
-	fbxLoader.load('/wizard_showdown/models/clock.fbx', function (clock) {
+	fbxLoader.load('/models/clock.fbx', function (clock) {
 		clock.scale.set(0.07, 0.07, 0.07)
 		clock.position.set(-20, 95, -100);
 		clock.rotateY(0.7);
@@ -328,7 +328,7 @@ function importClock() {
 }
 
 // var mtlLoader = new THREE.MTLLoader();
-// mtlLoader.setPath('/wizard_showdown/');
+// mtlLoader.setPath('');
 // mtlLoader.load('object.mtl', function (materials) {
 // 	materials.preload();
 // 	var objLoader = new THREE.OBJLoader();
@@ -346,9 +346,9 @@ function importClock() {
 // });
 
 
-// let wizard_texture = new THREE.TextureLoader().load('/wizard_showdown/textures/56x56texture.png');
+// let wizard_texture = new THREE.TextureLoader().load('textures/56x56texture.png');
 // let wizard_loader = new GLTFLoader();
-// wizard_loader.load('models/Wizard-Finished.glb', function (wizard) {
+// wizard_loader.load('/models/Wizard-Finished.glb', function (wizard) {
 // 	wizard.scene.scale.set(100, 100, 100);
 // 	wizard.scene.position.set(-150, 2, 0);
 // 	wizard.scene.rotateY(Math.PI / 2);
