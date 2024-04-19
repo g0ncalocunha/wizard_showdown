@@ -2,23 +2,27 @@
 <html lang="en">
 	<head>
 		<meta charset="utf-8">
+		<link rel="icon" href="./textures/witch-hat.png" type="png" title="witch hat icons">
 		<title>Wizard Showdown</title>
 		<style>
 		</style>
-
 	</head>
 	<body>
 		
 		<div class="titleScreen">
-			<h1>Wizard Showdown</h1>
+			<h2>Wizard Showdown</h2>
 			<button id="playButton">Play</button>
 		</div>
 
-		<div class="spell">
-			<h1>Choose a spell</h1>
-			<button class="options">Play</button>
-			<button class="options">Play</button>
-			<button class="options">Play</button>
+		<div class="HUD">
+			<div class="spellChoice">
+				<div id = "result">
+	
+				</div>
+				<button id="fire"><img src="./assets/icons8-fire-96.png" alt="Fire Blast">Fire Blast</button>
+				<button id="grass"><img src="./assets/icons8-grass-96.png" alt="Leaf Storm">Leaf Storm</button>
+				<button id="water"><img src="./assets/icons8-water-96.png" alt="Water Pulse">Water Pulse</button>
+			</div>
 		</div>
 
 		<canvas id="threejs"></canvas>   
