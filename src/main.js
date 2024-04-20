@@ -8,15 +8,33 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 // import { RGBELoader } from 'three/addons/loaders/RGBELoader.js';
 import { MTLLoader } from 'three/addons/loaders/MTLLoader.js';
 
-let clock, mixer, scene, renderer, camera, controls;
+let clock, mixer, scene, renderer, camera;
 let floor;
 let wizard_model, wizard_skeleton;
 let fireButton, grassButton, waterButton, resultDisplay;
 let spell_direction, spell_speed;
 
 // init();
-document.getElementById('playButton').addEventListener('click', function () {
-	init();
+const play = document.getElementById('playButton');
+play.addEventListener('click', playGame);
+const help = document.getElementById('helpButton');
+help.addEventListener('click', openHelp);
+
+animate();
+
+
+function openHelp() {
+	document.querySelector('.helpScreen').style.display = 'flex';
+	document.querySelector('.titleScreen').style.display = 'none';
+	const back = document.getElementById('backButton');
+	back.addEventListener('click', closeHelp);
+}
+function closeHelp() {
+	document.querySelector('.titleScreen').style.display = 'flex';
+	document.querySelector('.helpScreen').style.display = 'none';
+}
+
+function playGame() {
 	document.querySelector('.titleScreen').style.display = 'none';
 	document.querySelector('.HUD').style.display = 'flex';
 	document.querySelector('.spellChoice').style.display = 'block';
@@ -39,9 +57,9 @@ document.getElementById('playButton').addEventListener('click', function () {
 			playRound('waterpulse')
 		});
 	}
-});
+	init();
+}
 
-animate();
 
 function init() {
 
@@ -65,22 +83,19 @@ function init() {
 	camera.position.set(150, 200, 0);
 	camera.lookAt(0, 150, 0);
 
-	const light = new THREE.SpotLight(0xffffff, 2000000);
-	light.position.set(100, 1000, 0);
-
-	light.castShadow = true;
+	const light = new THREE.AmbientLight(0xffffff, 0.5);
 	scene.add(light);
 
-	const floor_light = new THREE.SpotLight(0xffffff, 100000);
-	floor_light.position.set(0, -100, 0);
-	floor_light.castShadow = true;
-	scene.add(floor_light);
+	const top_light = new THREE.SpotLight(0xffffff, 200000);
+	top_light.position.set(100, 500, 0);
+	top_light.target.position.set(-100, 0, 0);
+	top_light.castShadow = true;
+	scene.add(top_light);
 
-	//----------------------------------------NATIVE OBJECTS-------------------------------------------------------
 
 	const stone_texture = new THREE.TextureLoader().load('/textures/stone-texture.jpg')
 	const table_geometry = new THREE.BoxGeometry(200, 5, 300);
-	const table_material = new THREE.MeshLambertMaterial({ map: stone_texture });
+	const table_material = new THREE.MeshPhongMaterial({ map: stone_texture });
 	const table = new THREE.Mesh(table_geometry, table_material);
 	table.receiveShadow = true;
 	table.castShadow = true;
@@ -89,23 +104,23 @@ function init() {
 
 	const floor_texture = new THREE.TextureLoader().load('/textures/vortex.jpg')
 	const floor_geometry = new THREE.PlaneGeometry(1024, 1024);
-	const floor_material = new THREE.MeshBasicMaterial({ map: floor_texture, side: THREE.DoubleSide });
+	const floor_material = new THREE.MeshPhongMaterial({ map: floor_texture, side: THREE.DoubleSide });
 	floor = new THREE.Mesh(floor_geometry, floor_material);
 	floor.receiveShadow = true;
 	floor.rotateX(Math.PI / 2)
 	scene.add(floor);
 
 	const room_geometry = new THREE.BoxGeometry(512, 512, 512);
-	const room_material = new THREE.MeshLambertMaterial({ map: stone_texture, side: THREE.DoubleSide })
+	const room_material = new THREE.MeshPhongMaterial({ map: stone_texture, side: THREE.DoubleSide })
 	const room = new THREE.Mesh(room_geometry, room_material);
 	room.receiveShadow = true;
 	room.position.set(0, 254, 0)
 	scene.add(room);
 
-	//---------------------------------MODEL IMPORTS--------------------------------------------------------------
 
 	importWizard();
 	importClock();
+	importPotions();
 
 	//const book_texture = new THREE.TextureLoader().load('textures/book.png' ); 
 
@@ -278,15 +293,16 @@ function importWizard() {
 	fbxLoader.load('/models/Standing Block React Large.fbx', function (wizard) {
 		wizard.scale.set(1, 1, 1)
 		wizard.receiveShadow = true;
+		wizard.castShadow = true;
 		wizard.position.set(-150, 2, 0);
 		wizard.rotateY(Math.PI / 2);
 		wizard.traverse(function (child) {
 			if (child.isMesh) {
-				//child.material = material
 				child.castShadow = true;
 				child.receiveShadow = true;
 				if (wizard.material) {
 					wizard.material.transparent = false
+					wizard.material = new THREE.MeshPhongMaterial;
 				}
 			}
 		});
@@ -304,15 +320,14 @@ function importWizard() {
 
 function importClock() {
 	const clock_texture = new THREE.TextureLoader().load('/textures/clock_base.png');
-	console.log(clock_texture)
 	const fbxLoader = new FBXLoader()
 	fbxLoader.load('/models/clock.fbx', function (clock) {
-		clock.scale.set(0.07, 0.07, 0.07)
+		clock.scale.set(0.08, 0.08, 0.08);
 		clock.position.set(-20, 95, -100);
 		clock.rotateY(0.7);
 		clock.traverse(function (child) {
 			if (child.isMesh) {
-				child.material = new THREE.MeshLambertMaterial;
+				child.material = new THREE.MeshPhongMaterial;
 				child.material.map = clock_texture;
 				child.material.map.needsUpdate = true;
 				child.castShadow = true;
@@ -325,6 +340,68 @@ function importClock() {
 		console.error(error);
 
 	});
+}
+
+function importPotions() {
+	const potions = new THREE.Group();
+	const fbxLoader = new FBXLoader()
+	fbxLoader.load('/models/potions/Potion_red.fbx', function (Potion_red) {
+		Potion_red.scale.set(0.08, 0.08, 0.08);
+		Potion_red.position.set(-20, 95, 110);
+		Potion_red.rotateY(0.7);
+		console.log(Potion_red)
+		Potion_red.traverse(function (child) {
+			if (child.isMesh) {
+				child.material.transparent = false;
+				child.castShadow = true;
+				child.receiveShadow = true;
+			}
+		});
+		potions.add(Potion_red);
+	}, undefined, function (error) {
+
+		console.error(error);
+
+	});
+	const fbxLoader1 = new FBXLoader()
+	fbxLoader.load('/models/potions/Potion_pink.fbx', function (Potion_pink) {
+		Potion_pink.scale.set(0.08, 0.08, 0.08);
+		Potion_pink.position.set(-40, 95, 90);
+		Potion_pink.rotateY(0.2);
+		console.log(Potion_pink)
+		Potion_pink.traverse(function (child) {
+			if (child.isMesh) {
+				child.material.transparent = false;
+				child.castShadow = true;
+				child.receiveShadow = true;
+			}
+		});
+		potions.add(Potion_pink);
+	}, undefined, function (error) {
+
+		console.error(error);
+
+	});
+	const fbxLoader2 = new FBXLoader()
+	fbxLoader.load('/models/potions/Potion_blue.fbx', function (Potion_blue) {
+		Potion_blue.scale.set(0.08, 0.08, 0.08);
+		Potion_blue.position.set(-60, 95, 110);
+		Potion_blue.rotateY(0.2);
+		console.log(Potion_blue)
+		Potion_blue.traverse(function (child) {
+			if (child.isMesh) {
+				child.material.transparent = false;
+				child.castShadow = true;
+				child.receiveShadow = true;
+			}
+		});
+		potions.add(Potion_blue);
+	}, undefined, function (error) {
+
+		console.error(error);
+
+	});
+	scene.add(potions)
 }
 
 // var mtlLoader = new THREE.MTLLoader();

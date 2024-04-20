@@ -1,7 +1,7 @@
 @import url("https://use.typekit.net/jmk3xov.css");
 @import url('https://fonts.googleapis.com/css2?family=IM+Fell+English&family=Cinzel&family=Cardo&display=swap');
 
-.titleScreen{
+.titleScreen {
   position: fixed;
   top: 0;
   right: 0;
@@ -10,7 +10,7 @@
   font-size: 80px;
   color: #fff;
   font-family: 'Cinzel', serif;
-  background-image: url("./textures/space.jpg");
+  background-image: url("/textures/space.jpg");
   background-size: cover;
   background-position: center;
   text-align: center;
@@ -21,20 +21,55 @@
   display: flex;
   flex-direction: column;
 }
+
 .titleScreen button {
-    font-family: 'Cinzel', serif;
-    color: #fff;
-    background-color: transparent ;
-    border: transparent;
-    align-content: center;
-    align-self: center;
-    width: 400px;
-    height: 120px;
-    font-size: 80px;
-    border-radius: 100px;
+  font-family: 'Cinzel', serif;
+  color: #fff;
+  background-color: transparent;
+  border: transparent;
+  align-content: center;
+  align-self: center;
+  width: 400px;
+  height: 120px;
+  font-size: 80px;
+  border-radius: 100px;
 }
 
-.HUD{
+.helpScreen {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  font-size: 32px;
+  color: #fff;
+  font-family: 'Cinzel', serif;
+  background-image: url("/textures/space.jpg");
+  background-size: cover;
+  background-position: center;
+  text-align: center;
+  width: 100%;
+  height: 100%;
+  align-content: center;
+  justify-content: center;
+  display: none;
+  flex-direction: column;
+}
+
+#backButton {
+  font-family: 'Cinzel', serif;
+  color: #fff;
+  background-color: transparent;
+  border: transparent;
+  align-content: center;
+  align-self: center;
+  width: 400px;
+  height: 120px;
+  font-size: 80px;
+  border-radius: 100px;
+}
+
+.HUD {
   z-index: 50;
   position: absolute;
   top: 0;
@@ -44,66 +79,69 @@
   display: none;
 }
 
-.spellChoice{
+.spellChoice {
   z-index: 50;
   position: absolute;
   bottom: 0;
   left: 0;
-  padding: 10px;
   margin-bottom: 20px;
   font-size: 60px;
-  width:220px;
+  width: 160px;
   margin-left: 20px;
   color: #fff;
   font-family: 'Cinzel', serif;
   text-align: center;
-  align-content:center;
-  justify-content:center;
+  align-content: center;
+  justify-content: center;
   display: none;
   flex-direction: column;
 }
 
 .spellChoice button {
-    font-family: 'Cinzel', serif;
-    font-weight: bold;
-    color: #fff;
-    border: white;
-    text-align: center;
-    align-content: center;
-    align-self: center;
-    justify-content:center;
-    width: 220px;
-    height: 100px;
-    /* padding: 10px 20px; */
-    font-size: 28px;
-    border-radius: 500px;
+  font-family: 'Cinzel', serif;
+  font-weight: bold;
+  color: #fff;
+  border: 5px;
+  border-color: #fff;
+  text-align: center;
+  align-content: center;
+  align-self: center;
+  justify-content: center;
+  width: 160px;
+  height: 80px;
+  /* padding: 10px 20px; */
+  font-size: 24px;
+  border-radius: 80px;
 }
 
-#fire{
-  background-color: red ;
+#fire {
+  background-color: red;
   display: flex;
   align-items: center;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
 }
+
 #fire:hover {
   background-color: darkred;
 }
 
-#grass{
-  background-color: green ;
+#grass {
+  background-color: green;
   display: flex;
   align-items: center;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
 }
+
 #grass:hover {
   background-color: darkgreen;
 }
 
-#water{
-  background-color:dodgerblue;
+#water {
+  background-color: dodgerblue;
   display: flex;
   align-items: center;
 }
+
 #water:hover {
   background-color: darkblue;
 }
