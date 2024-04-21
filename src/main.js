@@ -80,14 +80,14 @@ function init() {
 	//scene.background = spaceTexture;
 
 	camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 10000);
-	camera.position.set(150, 200, 0);
-	camera.lookAt(0, 150, 0);
+	camera.position.set(200, 200, 0);
+	camera.lookAt(-50, 100, 0);
 
 	const light = new THREE.AmbientLight(0xffffff, 0.5);
 	scene.add(light);
 
 	const top_light = new THREE.SpotLight(0xffffff, 200000);
-	top_light.position.set(100, 500, 0);
+	top_light.position.set(200, 500, 0);
 	top_light.target.position.set(-100, 0, 0);
 	top_light.castShadow = true;
 	scene.add(top_light);
@@ -121,8 +121,8 @@ function init() {
 	importWizard();
 	importClock();
 	importPotions();
-
-	//const book_texture = new THREE.TextureLoader().load('textures/book.png' ); 
+	importBook();
+	importOrb();
 
 	window.onresize = function () {
 
@@ -132,15 +132,6 @@ function init() {
 		renderer.setSize(window.innerWidth, window.innerHeight);
 
 	};
-
-	var model;
-	var onProgress = function (xhr) {
-		if (xhr.lengthComputable) {
-			var percentComplete = xhr.loaded / xhr.total * 100;
-			console.log(Math.round(percentComplete, 2) + '% downloaded');
-		}
-	};
-	var onError = function (xhr) { };
 }
 
 function playRound(playerChoice) {
@@ -176,7 +167,7 @@ function animate() {
 
 	let delta = clock.getDelta();
 
-	mixer.update(delta);
+	// mixer.update(delta);
 	floor.rotateZ(-0.001);
 
 	renderer.render(scene, camera);
@@ -268,12 +259,12 @@ function createLeafStorm(x, y, z, r) {
 function launchSpell(spell, user) {
 	let spell_x, spell_y, spell_z, spell_r;
 	if (user == 'player') {
-		spell_x = 50;
+		spell_x = 100;
 		spell_y = 150;
 		spell_z = 0;
 		spell_r = 0;
 	} else {
-		spell_x = -50;
+		spell_x = -100;
 		spell_y = 150;
 		spell_z = 0;
 		spell_r = Math.PI;
@@ -308,7 +299,7 @@ function importWizard() {
 		});
 		scene.add(wizard);
 
-		let wizard_animations = wizard.animations;
+		// let wizard_animations = wizard.animations;
 		mixer = new THREE.AnimationMixer(wizard);
 
 	}, undefined, function (error) {
@@ -323,8 +314,8 @@ function importClock() {
 	const fbxLoader = new FBXLoader()
 	fbxLoader.load('/models/clock.fbx', function (clock) {
 		clock.scale.set(0.08, 0.08, 0.08);
-		clock.position.set(-20, 95, -100);
-		clock.rotateY(0.7);
+		clock.position.set(0, 95, -120);
+		// clock.rotateY(Math.PI / 2);
 		clock.traverse(function (child) {
 			if (child.isMesh) {
 				child.material = new THREE.MeshPhongMaterial;
@@ -345,19 +336,18 @@ function importClock() {
 function importPotions() {
 	const potions = new THREE.Group();
 	const fbxLoader = new FBXLoader()
-	fbxLoader.load('/models/potions/Potion_red.fbx', function (Potion_red) {
-		Potion_red.scale.set(0.08, 0.08, 0.08);
-		Potion_red.position.set(-20, 95, 110);
-		Potion_red.rotateY(0.7);
-		console.log(Potion_red)
-		Potion_red.traverse(function (child) {
+	fbxLoader.load('/models/potions/Potion_orange.fbx', function (Potion_orange) {
+		Potion_orange.scale.set(0.08, 0.08, 0.08);
+		Potion_orange.position.set(-20, 95, 110);
+		Potion_orange.rotateY(0.7);
+		Potion_orange.traverse(function (child) {
 			if (child.isMesh) {
 				child.material.transparent = false;
 				child.castShadow = true;
 				child.receiveShadow = true;
 			}
 		});
-		potions.add(Potion_red);
+		potions.add(Potion_orange);
 	}, undefined, function (error) {
 
 		console.error(error);
@@ -368,7 +358,6 @@ function importPotions() {
 		Potion_pink.scale.set(0.08, 0.08, 0.08);
 		Potion_pink.position.set(-40, 95, 90);
 		Potion_pink.rotateY(0.2);
-		console.log(Potion_pink)
 		Potion_pink.traverse(function (child) {
 			if (child.isMesh) {
 				child.material.transparent = false;
@@ -387,7 +376,6 @@ function importPotions() {
 		Potion_blue.scale.set(0.08, 0.08, 0.08);
 		Potion_blue.position.set(-60, 95, 110);
 		Potion_blue.rotateY(0.2);
-		console.log(Potion_blue)
 		Potion_blue.traverse(function (child) {
 			if (child.isMesh) {
 				child.material.transparent = false;
@@ -403,6 +391,64 @@ function importPotions() {
 	});
 	scene.add(potions)
 }
+
+function importBook() {
+	const book_texture = new THREE.TextureLoader().load('textures/book.png' );
+	const fbxLoader = new FBXLoader()
+	fbxLoader.load('/models/book/book.fbx', function (book) {
+		book.scale.set(0.5, 0.5, 0.5);
+		book.position.set(90, 103, 70);
+		book.rotateX(-Math.PI / 2);
+		book.rotateZ(Math.PI / 2);
+		book.traverse(function (child) {
+			if (child.isMesh) {
+				child.material.map = book_texture;
+				child.material.map.needsUpdate = true;
+				child.castShadow = true;
+				child.receiveShadow = true;
+			}
+		});
+		scene.add(book);
+	}, undefined, function (error) {
+
+		console.error(error);
+
+	});
+}
+
+// function importOrb() {
+// 	const book_texture = new THREE.TextureLoader().load('textures/book.png' );
+// 	const fbxLoader = new FBXLoader()
+// 	fbxLoader.load('/models/palantiri/palantiri.fbx', function (orb) {
+// 		orb.scale.set(0.2, 0.2, 0.2);
+// 		orb.position.set(0, 110, 0);
+// 		orb.traverse(function (child) {
+// 			if (child.isMesh) {
+// 				// child.material.map = book_texture;
+// 				// child.material.map.needsUpdate = true;
+// 				console.log(child);
+// 				child.material[0].transparent = true;
+// 				// child.material[0].emissiveMap = new THREE.TextureLoader().load('textures/palantiri/Inner_Emissive.png' );
+// 				child.material[0].bumpMap = new THREE.TextureLoader().load('textures/palantiri/Outer shell_Height.png' );
+// 				child.material[0].normalMap = new THREE.TextureLoader().load('textures/palantiri/Outer shell_Normal.png' );
+// 				child.material[0].map = new THREE.TextureLoader().load('textures/palantiri/Outer shell_Base_Color.png' );
+// 				console.log(child.material[1]);
+// 				child.material[1].transparent = false;
+// 				child.material[1].emissiveMap = new THREE.TextureLoader().load('textures/palantiri/Inner_Emissive.png' );
+// 				child.material[1].bumpMap = new THREE.TextureLoader().load('textures/palantiri/Inner_Height.png' );
+// 				child.material[1].normalMap = new THREE.TextureLoader().load('textures/palantiri/Inner_Normal.png' );
+// 				child.material[1].map = new THREE.TextureLoader().load('textures/palantiri/Inner_Base_Color.png' );
+// 				// child.castShadow = true;
+// 				// child.receiveShadow = true;
+// 			}
+// 		});
+// 		scene.add(orb);
+// 	}, undefined, function (error) {
+
+// 		console.error(error);
+
+// 	});
+// }
 
 // var mtlLoader = new THREE.MTLLoader();
 // mtlLoader.setPath('');
@@ -455,4 +501,4 @@ function importPotions() {
 
 // 	console.error(error);
 
-// });	
+// });
