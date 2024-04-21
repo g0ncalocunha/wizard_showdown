@@ -1,5 +1,7 @@
 import '/css/style.css';
-import * as THREE from 'three';
+// import * as THREE from 'three';
+// Import three.js from jsDelivr CDN
+import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.132.2/build/three.module.js';
 import vertexShader from '/shaders/vertexShader.glsl'
 import fragmentShader from '/shaders/fragmentShader.glsl'
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader';
