@@ -1,14 +1,14 @@
 import '/css/style.css';
 // import * as THREE from 'three';
 // Import three.js from jsDelivr CDN
-import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.132.2/build/three.module.js';
+import * as THREE from 'three';
 import vertexShader from '/shaders/vertexShader.glsl'
 import fragmentShader from '/shaders/fragmentShader.glsl'
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader';
-// import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+// import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
 // import { RGBELoader } from 'three/addons/loaders/RGBELoader.js';
-import { MTLLoader } from 'three/addons/loaders/MTLLoader.js';
+// import { MTLLoader } from 'three/addons/loaders/MTLLoader.js';
 
 let clock, mixer, scene, renderer, camera;
 let floor;
