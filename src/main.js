@@ -1,8 +1,19 @@
 import * as THREE from 'three';
-import vertexShader from '../shaders/vertexShader.glsl'
-import fragmentShader from '../shaders/fragmentShader.glsl'
+// import vertexShader from '../shaders/vertexShader.glsl'
+// import fragmentShader from '../shaders/fragmentShader.glsl'
 import { FBXLoader } from 'https://threejs.org/examples/jsm/loaders/FBXLoader.js';
 import { GLTFLoader } from 'https://threejs.org/examples/jsm/loaders/GLTFLoader.js';
+let vertexShader, fragmentShader;
+
+fetch('./shaders/vertexShader.glsl')
+    .then(response => response.text())
+    .then(data => vertexShader = data)
+    .catch(err => console.error(err));
+
+fetch('./shaders/fragmentShader.glsl')
+    .then(response => response.text())
+    .then(data => fragmentShader = data)
+    .catch(err => console.error(err));
 // Imports for pages (not working)
 // import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.132.2/build/three.module.js';
 // import { FBXLoader } from 'https://cdn.jsdelivr.net/npm/three@0.132.2/examples/jsm/loaders/FBXLoader.js';
