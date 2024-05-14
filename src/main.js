@@ -97,7 +97,7 @@ function init() {
 
 
 	scene = new THREE.Scene();
-	const spaceTexture = new THREE.TextureLoader().load('./textures/space.jpg');
+	const spaceTexture = new THREE.TextureLoader().load('../textures/space.jpg');
 	//scene.background = spaceTexture;
 
 	camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 10000);
@@ -114,7 +114,7 @@ function init() {
 	scene.add(top_light);
 
 
-	const stone_texture = new THREE.TextureLoader().load('./textures/stone-texture.jpg')
+	const stone_texture = new THREE.TextureLoader().load('../textures/stone-texture.jpg')
 	const table_geometry = new THREE.BoxGeometry(200, 5, 300);
 	const table_material = new THREE.MeshPhongMaterial({ map: stone_texture });
 	const table = new THREE.Mesh(table_geometry, table_material);
@@ -123,7 +123,7 @@ function init() {
 	table.position.set(0, 90, 0)
 	scene.add(table);
 
-	const floor_texture = new THREE.TextureLoader().load('./textures/vortex.jpg')
+	const floor_texture = new THREE.TextureLoader().load('../textures/vortex.jpg')
 	const floor_geometry = new THREE.PlaneGeometry(1024, 1024);
 	const floor_material = new THREE.MeshPhongMaterial({ map: floor_texture, side: THREE.DoubleSide });
 	floor = new THREE.Mesh(floor_geometry, floor_material);
