@@ -44,7 +44,7 @@
   font-size: 32px;
   color: #fff;
   font-family: 'Cinzel', serif;
-  background-image: url("/textures/space.jpg");
+  background-image: url("../textures/space.jpg");
   background-size: cover;
   background-position: center;
   text-align: center;
