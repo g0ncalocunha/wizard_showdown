@@ -14,10 +14,6 @@ fetch('./shaders/fragmentShader.glsl')
     .then(response => response.text())
     .then(data => fragmentShader = data)
     .catch(err => console.error(err));
-// Imports for pages (not working)
-// import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.132.2/build/three.module.js';
-// import { FBXLoader } from 'https://cdn.jsdelivr.net/npm/three@0.132.2/examples/jsm/loaders/FBXLoader.js';
-// import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.132.2/examples/jsm/loaders/GLTFLoader.js';
 // import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
 // import { RGBELoader } from 'three/addons/loaders/RGBELoader.js';
 // import { MTLLoader } from 'three/addons/loaders/MTLLoader.js';
@@ -101,7 +97,7 @@ function init() {
 
 
 	scene = new THREE.Scene();
-	const spaceTexture = new THREE.TextureLoader().load('../textures/space.jpg');
+	const spaceTexture = new THREE.TextureLoader().load('./textures/space.jpg');
 	//scene.background = spaceTexture;
 
 	camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 10000);
@@ -118,7 +114,7 @@ function init() {
 	scene.add(top_light);
 
 
-	const stone_texture = new THREE.TextureLoader().load('../textures/stone-texture.jpg')
+	const stone_texture = new THREE.TextureLoader().load('./textures/stone-texture.jpg')
 	const table_geometry = new THREE.BoxGeometry(200, 5, 300);
 	const table_material = new THREE.MeshPhongMaterial({ map: stone_texture });
 	const table = new THREE.Mesh(table_geometry, table_material);
@@ -127,7 +123,7 @@ function init() {
 	table.position.set(0, 90, 0)
 	scene.add(table);
 
-	const floor_texture = new THREE.TextureLoader().load('../textures/vortex.jpg')
+	const floor_texture = new THREE.TextureLoader().load('./textures/vortex.jpg')
 	const floor_geometry = new THREE.PlaneGeometry(1024, 1024);
 	const floor_material = new THREE.MeshPhongMaterial({ map: floor_texture, side: THREE.DoubleSide });
 	floor = new THREE.Mesh(floor_geometry, floor_material);
@@ -207,7 +203,7 @@ function createFireBlast(x, y, z, r) {
 	let fireblast = new THREE.Group();
 	let fireball_loader = new GLTFLoader();
 
-	fireball_loader.load('../models/spells/fireball.glb', function (fireball) {
+	fireball_loader.load('./models/spells/fireball.glb', function (fireball) {
 		let energyball = fireball.scene;
 		fireball.scene.scale.set(2, 2, 2);
 		fireball.scene.position.set(x, y, z);
@@ -280,7 +276,7 @@ function createLeafStorm(x, y, z, r) {
 	let leafstorm = new THREE.Group();
 	let tornado_loader = new GLTFLoader();
 
-	tornado_loader.load('../models/spells/leaf_tornado.glb', function (object) {
+	tornado_loader.load('./models/spells/leaf_tornado.glb', function (object) {
 		let tornado = object.scene;
 		object.scene.scale.set(100, 75, 100);
 		object.scene.position.set(x, y, z);
@@ -319,7 +315,7 @@ function launchSpell(spell, user) {
 
 function importWizard() {
 	const fbxLoader = new FBXLoader()
-	fbxLoader.load('../models/Standing Block React Large.fbx', function (wizard) {
+	fbxLoader.load('./models/Standing Block React Large.fbx', function (wizard) {
 		wizard.scale.set(1, 1, 1)
 		wizard.receiveShadow = true;
 		wizard.castShadow = true;
@@ -348,9 +344,9 @@ function importWizard() {
 }
 
 function importClock() {
-	const clock_texture = new THREE.TextureLoader().load('../textures/clock_base.png');
+	const clock_texture = new THREE.TextureLoader().load('./textures/clock_base.png');
 	const fbxLoader = new FBXLoader()
-	fbxLoader.load('../models/clock.fbx', function (clock) {
+	fbxLoader.load('./models/clock.fbx', function (clock) {
 		clock.scale.set(0.08, 0.08, 0.08);
 		clock.position.set(0, 95, -120);
 		// clock.rotateY(Math.PI / 2);
@@ -374,7 +370,7 @@ function importClock() {
 function importPotions() {
 	const potions = new THREE.Group();
 	const fbxLoader = new FBXLoader()
-	fbxLoader.load('../models/potions/Potion_orange.fbx', function (Potion_orange) {
+	fbxLoader.load('./models/potions/Potion_orange.fbx', function (Potion_orange) {
 		Potion_orange.scale.set(0.08, 0.08, 0.08);
 		Potion_orange.position.set(-20, 95, 110);
 		Potion_orange.rotateY(0.7);
@@ -392,7 +388,7 @@ function importPotions() {
 
 	});
 	const fbxLoader1 = new FBXLoader()
-	fbxLoader.load('../models/potions/Potion_pink.fbx', function (Potion_pink) {
+	fbxLoader.load('./models/potions/Potion_pink.fbx', function (Potion_pink) {
 		Potion_pink.scale.set(0.08, 0.08, 0.08);
 		Potion_pink.position.set(-40, 95, 90);
 		Potion_pink.rotateY(0.2);
@@ -410,7 +406,7 @@ function importPotions() {
 
 	});
 	const fbxLoader2 = new FBXLoader()
-	fbxLoader.load('../models/potions/Potion_blue.fbx', function (Potion_blue) {
+	fbxLoader.load('./models/potions/Potion_blue.fbx', function (Potion_blue) {
 		Potion_blue.scale.set(0.08, 0.08, 0.08);
 		Potion_blue.position.set(-60, 95, 110);
 		Potion_blue.rotateY(0.2);
@@ -431,9 +427,9 @@ function importPotions() {
 }
 
 function importBook() {
-	const book_texture = new THREE.TextureLoader().load('../textures/book.png' );
+	const book_texture = new THREE.TextureLoader().load('./textures/book.png' );
 	const fbxLoader = new FBXLoader()
-	fbxLoader.load('../models/book/book.fbx', function (book) {
+	fbxLoader.load('./models/book/book.fbx', function (book) {
 		book.scale.set(0.5, 0.5, 0.5);
 		book.position.set(90, 103, 70);
 		book.rotateX(-Math.PI / 2);
