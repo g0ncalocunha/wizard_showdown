@@ -2,8 +2,8 @@ import '/css/style.css';
 import * as THREE from 'three';
 import vertexShader from '/shaders/vertexShader.glsl'
 import fragmentShader from '/shaders/fragmentShader.glsl'
-import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader.js';
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import { FBXLoader } from 'https://threejs.org/examples/jsm/loaders/FBXLoader.js';
+import { GLTFLoader } from 'https://threejs.org/examples/jsm/loaders/GLTFLoader.js';
 // Imports for pages (not working)
 // import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.132.2/build/three.module.js';
 // import { FBXLoader } from 'https://cdn.jsdelivr.net/npm/three@0.132.2/examples/jsm/loaders/FBXLoader.js';
