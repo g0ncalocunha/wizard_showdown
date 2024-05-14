@@ -1,19 +1,33 @@
 import '/css/style.css';
-// import * as THREE from 'three';
-import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.132.2/build/three.module.js';
+import * as THREE from 'three';
 import vertexShader from '/shaders/vertexShader.glsl'
 import fragmentShader from '/shaders/fragmentShader.glsl'
-import { FBXLoader } from 'https://cdn.jsdelivr.net/npm/three@0.132.2/examples/jsm/loaders/FBXLoader.js';
-import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.132.2/examples/jsm/loaders/GLTFLoader.js';
+import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader.js';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+// Imports for pages (not working)
+// import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.132.2/build/three.module.js';
+// import { FBXLoader } from 'https://cdn.jsdelivr.net/npm/three@0.132.2/examples/jsm/loaders/FBXLoader.js';
+// import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.132.2/examples/jsm/loaders/GLTFLoader.js';
 // import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
 // import { RGBELoader } from 'three/addons/loaders/RGBELoader.js';
 // import { MTLLoader } from 'three/addons/loaders/MTLLoader.js';
-
-let clock, mixer, scene, renderer, camera;
+let clock = new THREE.Clock();
+let mixer, scene, renderer, camera;
 let floor;
 let wizard_model, wizard_skeleton;
 let fireButton, grassButton, waterButton, resultDisplay;
 let spell_direction, spell_speed;
+let enemy_spellKF = new THREE.VectorKeyframeTrack(
+  '.position', // property to animate
+  [0, 1, 2], // times (in seconds)
+  [-100, 2, 0, 0, 150, 0, 200, 150, 0] // values
+);
+let player_spellKF = new THREE.VectorKeyframeTrack(
+  '.position', // property to animate
+  [0, 1, 2], // times (in seconds)
+  [150, 2, 0, 0, 150, 0, -150, 150, 0] // values
+);
+let spell_mixer;
 
 // init();
 const play = document.getElementById('playButton');
@@ -82,7 +96,7 @@ function init() {
 
 	camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 10000);
 	camera.position.set(200, 200, 0);
-	camera.lookAt(-50, 100, 0);
+	camera.lookAt(-75, 100, 0);
 
 	const light = new THREE.AmbientLight(0xffffff, 0.5);
 	scene.add(light);
@@ -123,7 +137,7 @@ function init() {
 	importClock();
 	importPotions();
 	importBook();
-	importOrb();
+	// importOrb();
 
 	window.onresize = function () {
 
@@ -151,25 +165,29 @@ function playRound(playerChoice) {
 		resultDisplay.textContent = 'You win!';
 	} else {
 		launchSpell(computerChoice, 'enemy');
-		resultDisplay.textContent = 'Enemy wins!';
+		resultDisplay.textContent = 'You lose!';
 	}
+	setTimeout(function() {
+		resultDisplay.textContent = '';
+	}, 1000);
 }
 
-function endRound(result) {
-	if (result == 'win') {
-		resultDisplay.textContent = 'You win!';
-		scene.remove(spell);
-	}
-}
+// function endRound(result) {
+// 	if (result == 'win') {
+// 		resultDisplay.textContent = 'You win!';
+// 		scene.remove(spell);
+// 	}
+// }
 
 function animate() {
 
 	requestAnimationFrame(animate);
 
-	let delta = clock.getDelta();
+	// let delta = clock.getDelta();
 
 	// mixer.update(delta);
 	floor.rotateZ(-0.001);
+	
 
 	renderer.render(scene, camera);
 
@@ -207,7 +225,10 @@ function createFireBlast(x, y, z, r) {
 	fireglow.position.set(x, y, z);
 	fireglow.scale.multiplyScalar(1.3);
 	fireblast.add(fireglow);
-	scene.add(fireblast)
+	scene.add(fireblast);
+	setTimeout(function() {
+		scene.remove(fireblast);
+	}, 1000);
 }
 
 function createWaterPulse(x, y, z, r) {
@@ -240,6 +261,9 @@ function createWaterPulse(x, y, z, r) {
 	waterpulse.add(waterpulse1);
 	waterpulse.add(pulseglow);
 	scene.add(waterpulse);
+	setTimeout(function() {
+		scene.remove(waterpulse);
+	}, 1000);
 }
 
 function createLeafStorm(x, y, z, r) {
@@ -255,17 +279,20 @@ function createLeafStorm(x, y, z, r) {
 		console.error(error);
 	});
 	scene.add(leafstorm);
+	setTimeout(function() {
+		scene.remove(leafstorm);
+	}, 1000);
 }
 
 function launchSpell(spell, user) {
 	let spell_x, spell_y, spell_z, spell_r;
 	if (user == 'player') {
-		spell_x = 100;
+		spell_x = -125;
 		spell_y = 150;
 		spell_z = 0;
 		spell_r = 0;
 	} else {
-		spell_x = -100;
+		spell_x = 125;
 		spell_y = 150;
 		spell_z = 0;
 		spell_r = Math.PI;
