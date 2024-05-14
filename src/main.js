@@ -370,7 +370,7 @@ function importClock() {
 function importPotions() {
 	const potions = new THREE.Group();
 	const fbxLoader = new FBXLoader()
-	fbxLoader.load('/models/potions/Potion_orange.fbx', function (Potion_orange) {
+	fbxLoader.load('/models/potions/Potion_Orange.fbx', function (Potion_orange) {
 		Potion_orange.scale.set(0.08, 0.08, 0.08);
 		Potion_orange.position.set(-20, 95, 110);
 		Potion_orange.rotateY(0.7);
@@ -384,7 +384,7 @@ function importPotions() {
 		potions.add(Potion_orange);
 	});
 	const fbxLoader1 = new FBXLoader()
-	fbxLoader1.load('/models/potions/Potion_pink.fbx', function (Potion_pink) {
+	fbxLoader1.load('/models/potions/Potion_Pink.fbx', function (Potion_pink) {
 		Potion_pink.scale.set(0.08, 0.08, 0.08);
 		Potion_pink.position.set(-40, 95, 90);
 		Potion_pink.rotateY(0.2);
@@ -398,7 +398,7 @@ function importPotions() {
 		potions.add(Potion_pink);
 	});
 	const fbxLoader2 = new FBXLoader()
-	fbxLoader2.load('/models/potions/Potion_blue.fbx', function (Potion_blue) {
+	fbxLoader2.load('/models/potions/Potion_Blue.fbx', function (Potion_blue) {
 		Potion_blue.scale.set(0.08, 0.08, 0.08);
 		Potion_blue.position.set(-60, 95, 110);
 		Potion_blue.rotateY(0.2);
@@ -416,7 +416,7 @@ function importPotions() {
 
 function importBook() {
 	const book_texture = new THREE.TextureLoader().load('./textures/book.png' );
-	const fbxLoader = new FBXLoader()
+	const fbxLoader = new FBXLoader();
 	fbxLoader.load('./models/book/book.fbx', function (book) {
 		book.scale.set(0.5, 0.5, 0.5);
 		book.position.set(90, 103, 70);
