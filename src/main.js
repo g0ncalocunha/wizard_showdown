@@ -370,7 +370,7 @@ function importClock() {
 function importPotions() {
 	const potions = new THREE.Group();
 	const fbxLoader = new FBXLoader()
-	fbxLoader.load('../models/potions/Potion_orange.fbx', function (Potion_orange) {
+	fbxLoader.load('/models/potions/Potion_orange.fbx', function (Potion_orange) {
 		Potion_orange.scale.set(0.08, 0.08, 0.08);
 		Potion_orange.position.set(-20, 95, 110);
 		Potion_orange.rotateY(0.7);
@@ -382,13 +382,9 @@ function importPotions() {
 			}
 		});
 		potions.add(Potion_orange);
-	}, undefined, function (error) {
-
-		console.error(error);
-
 	});
 	const fbxLoader1 = new FBXLoader()
-	fbxLoader1.load('./models/potions/Potion_pink.fbx', function (Potion_pink) {
+	fbxLoader1.load('/models/potions/Potion_pink.fbx', function (Potion_pink) {
 		Potion_pink.scale.set(0.08, 0.08, 0.08);
 		Potion_pink.position.set(-40, 95, 90);
 		Potion_pink.rotateY(0.2);
@@ -400,10 +396,6 @@ function importPotions() {
 			}
 		});
 		potions.add(Potion_pink);
-	}, undefined, function (error) {
-
-		console.error(error);
-
 	});
 	const fbxLoader2 = new FBXLoader()
 	fbxLoader2.load('/models/potions/Potion_blue.fbx', function (Potion_blue) {
@@ -418,10 +410,6 @@ function importPotions() {
 			}
 		});
 		potions.add(Potion_blue);
-	}, undefined, function (error) {
-
-		console.error(error);
-
 	});
 	scene.add(potions)
 }
