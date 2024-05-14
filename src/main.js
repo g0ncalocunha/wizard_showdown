@@ -370,7 +370,7 @@ function importClock() {
 function importPotions() {
 	const potions = new THREE.Group();
 	const fbxLoader = new FBXLoader()
-	fbxLoader.load('../models/potions/Potion_orange.fbx', function (Potion_orange) {
+	fbxLoader.load('/models/potions/Potion_orange.fbx', function (Potion_orange) {
 		Potion_orange.scale.set(0.08, 0.08, 0.08);
 		Potion_orange.position.set(-20, 95, 110);
 		Potion_orange.rotateY(0.7);
@@ -388,7 +388,7 @@ function importPotions() {
 
 	});
 	const fbxLoader1 = new FBXLoader()
-	fbxLoader.load('./models/potions/Potion_pink.fbx', function (Potion_pink) {
+	fbxLoader.load('/models/potions/Potion_pink.fbx', function (Potion_pink) {
 		Potion_pink.scale.set(0.08, 0.08, 0.08);
 		Potion_pink.position.set(-40, 95, 90);
 		Potion_pink.rotateY(0.2);
