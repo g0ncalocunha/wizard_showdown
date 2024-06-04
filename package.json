@@ -1,5 +1,15 @@
 {
+  "homepage": "https://g0ncalocunha.github.io/wizard_showdown",
+  "name": "wizard_showdown",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "server": "vite --host",
+    "build": "vite build"
+  },
   "dependencies": {
+    "perlin-noise": "^0.0.1",
     "react": "^18.2.0",
     "three": "^0.163.0"
   },

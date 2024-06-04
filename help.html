@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <link rel="icon" href="textures/witch-hat.png" type="png" title="witch hat icons">
+  <title>Wizard Showdown</title>
+  <style>
+  </style>
+</head>
+
+<body>
+  <div class="helpScreen">
+    <h2>Instructions</h2>
+    <p>Compete against a fellow wizard using the three basic spells</p>
+    <h4>Type Advantages</h4>
+    <p><img src="assets/type_advantages.png" alt="Type Advantages"></p>
+    <button id="backButton">Go back</button>
+  </div>
+  <!-- The library -->
+
+  <script async src="https://unpkg.com/es-module-shims@1.6.3/dist/es-module-shims.js"></script>
+  <link rel="stylesheet" type="text/css" href="./css/help.css">
+  </link>
+
+  <script>
+    document.getElementById('backButton').addEventListener('click', function () {
+      window.location.href = 'index.html';
+    });
+  </script>
+</body>
+
+</html>

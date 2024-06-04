@@ -1,6 +1,3 @@
-<!DOCTYPE html>
-<html lang="en">
-
 <head>
 	<meta charset="utf-8">
 	<link rel="icon" href="textures/witch-hat.png" type="png" title="witch hat icons">
@@ -12,44 +9,26 @@
 <body>
 
 	<div class="titleScreen">
-		<h2>Wizard Showdown</h2>
-		<button id="playButton">Play</button>
-		<button id="helpButton">Help</button>
+			<h2>Wizard Showdown</h2>
+			<button id="playButton">Play</button>
+			<button id="helpButton">Help</button>
 	</div>
-
-	<div class="helpScreen">
-		<h2>Instructions</h2>
-		<p>Compete against a fellow wizard using the three basic spells</p>
-		<h4>Type Advantages</h4>
-		<p><img src="assets/type_advantages.png" alt="Type Advantages"></p>
-		<button id="backButton">Go back</button>
-	</div>
-
-	<div class="HUD">
-		<div class="spellChoice">
-			<div id="result">
-			</div>
-			<button id="fire"><img src="assets/icons8-fire-48.png" alt="Fire Blast">Fire Blast</button>
-			<button id="grass"><img src="assets/icons8-grass-48.png" alt="Leaf Storm">Leaf Storm</button>
-			<button id="water"><img src="assets/icons8-water-48.png" alt="Water Pulse">Water Pulse</button>
-		</div>
-	</div>
-
-	<canvas id="threejs"></canvas>
 
 	<!-- The library -->
 
 	<script async src="https://unpkg.com/es-module-shims@1.6.3/dist/es-module-shims.js"></script>
-	<script type="importmap">
-		{
-				"imports": {
-					"three": "https://threejs.org/build/three.module.js"
-				}
-		}
-	</script>
-	<script type="module" src="./src/main.js"></script>
-	<link rel="stylesheet" type="text/css" href="./css/style.css">
+	<link rel="stylesheet" type="text/css" href="./css/title.css">
 	</link>
+
+	<script>
+			document.getElementById('playButton').addEventListener('click', function() {
+					window.location.href = 'rpsgame.html';
+			});
+
+			document.getElementById('helpButton').addEventListener('click', function() {
+					window.location.href = 'help.html';
+			});
+	</script>
 
 </body>
 

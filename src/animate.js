@@ -1,22 +1,28 @@
-import '/css/style.css';
 import * as THREE from 'three';
-import vertexShader from '/shaders/vertexShader.glsl'
-import fragmentShader from '/shaders/fragmentShader.glsl'
-import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader.js';
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
-// Imports for pages (not working)
-// import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.132.2/build/three.module.js';
-// import { FBXLoader } from 'https://cdn.jsdelivr.net/npm/three@0.132.2/examples/jsm/loaders/FBXLoader.js';
-// import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.132.2/examples/jsm/loaders/GLTFLoader.js';
+// import vertexShader from '../shaders/vertexShader.glsl'
+// import fragmentShader from '../shaders/fragmentShader.glsl'
+import { FBXLoader } from 'https://threejs.org/examples/jsm/loaders/FBXLoader.js';
+import { GLTFLoader } from 'https://threejs.org/examples/jsm/loaders/GLTFLoader.js';
+let vertexShader, fragmentShader;
+
+fetch('./shaders/vertexShader.glsl')
+    .then(response => response.text())
+    .then(data => vertexShader = data)
+    .catch(err => console.error(err));
+
+fetch('./shaders/fragmentShader.glsl')
+    .then(response => response.text())
+    .then(data => fragmentShader = data)
+    .catch(err => console.error(err));
 // import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
 // import { RGBELoader } from 'three/addons/loaders/RGBELoader.js';
 // import { MTLLoader } from 'three/addons/loaders/MTLLoader.js';
-
-let clock = new THREE.Clock();
+let clock;
 let mixer, scene, renderer, camera;
-let floor;
+let floor, playerScore;
 let wizard_model, wizard_skeleton;
 let fireButton, grassButton, waterButton, resultDisplay;
+let spell_direction, spell_speed;
 let enemy_spellKF = new THREE.VectorKeyframeTrack(
   '.position', // property to animate
   [0, 1, 2], // times (in seconds)
@@ -27,13 +33,13 @@ let player_spellKF = new THREE.VectorKeyframeTrack(
   [0, 1, 2], // times (in seconds)
   [150, 2, 0, 0, 150, 0, -150, 150, 0] // values
 );
-let spell_mixer, spell_clip, spell_clipAction;
 
 // init();
 const play = document.getElementById('playButton');
 play.addEventListener('click', playGame);
 const help = document.getElementById('helpButton');
 help.addEventListener('click', openHelp);
+
 
 
 function openHelp() {
@@ -75,7 +81,7 @@ function playGame() {
 
 
 function init() {
-
+	clock = new THREE.Clock();
 	renderer = new THREE.WebGLRenderer({
 		antialias: true,
 		canvas: document.querySelector('#threejs'),
@@ -87,8 +93,9 @@ function init() {
 	renderer.shadowMap.enabled = true;
 
 
+	playerScore = 0;
 	scene = new THREE.Scene();
-	const spaceTexture = new THREE.TextureLoader().load('/textures/space.jpg');
+	const spaceTexture = new THREE.TextureLoader().load('./textures/space.jpg');
 	//scene.background = spaceTexture;
 
 	camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 10000);
@@ -105,7 +112,7 @@ function init() {
 	scene.add(top_light);
 
 
-	const stone_texture = new THREE.TextureLoader().load('/textures/stone-texture.jpg')
+	const stone_texture = new THREE.TextureLoader().load('./textures/stone-texture.jpg')
 	const table_geometry = new THREE.BoxGeometry(200, 5, 300);
 	const table_material = new THREE.MeshPhongMaterial({ map: stone_texture });
 	const table = new THREE.Mesh(table_geometry, table_material);
@@ -114,7 +121,7 @@ function init() {
 	table.position.set(0, 90, 0)
 	scene.add(table);
 
-	const floor_texture = new THREE.TextureLoader().load('/textures/vortex.jpg')
+	const floor_texture = new THREE.TextureLoader().load('./textures/vortex.jpg')
 	const floor_geometry = new THREE.PlaneGeometry(1024, 1024);
 	const floor_material = new THREE.MeshPhongMaterial({ map: floor_texture, side: THREE.DoubleSide });
 	floor = new THREE.Mesh(floor_geometry, floor_material);
@@ -142,10 +149,13 @@ function init() {
 		camera.updateProjectionMatrix();
 
 		renderer.setSize(window.innerWidth, window.innerHeight);
-
 	};
+	animate();
 }
 
+function clear() {
+
+}
 function playRound(playerChoice) {
 	const choices = ['fireblast', 'leafstorm', 'waterpulse'];
 	const computerChoice = choices[Math.floor(Math.random() * choices.length)];
@@ -158,42 +168,45 @@ function playRound(playerChoice) {
 		(playerChoice === 'leafstorm' && computerChoice === 'waterpulse') ||
 		(playerChoice === 'waterpulse' && computerChoice === 'fireblast')
 	) {
+		playerScore = playerScore + 100; // Increment the score
+		document.getElementById('score').textContent = 'Score: ' + playerScore;
 		launchSpell(playerChoice, 'player');
 		resultDisplay.textContent = 'You win!';
 	} else {
 		launchSpell(computerChoice, 'enemy');
 		resultDisplay.textContent = 'You lose!';
 	}
+	setTimeout(function() {
+		resultDisplay.textContent = '';
+	}, 1000);
 }
 
-function endRound(result) {
-	if (result == 'win') {
-		resultDisplay.textContent = 'You win!';
-		scene.remove(spell);
-	}
-}
+// function endRound(result) {
+// 	if (result == 'win') {
+// 		resultDisplay.textContent = 'You win!';
+// 		scene.remove(spell);
+// 	}
+// }
 
 function animate() {
 
 	requestAnimationFrame(animate);
 
-	let delta = clock.getDelta();
-	if (spell_clipAction.time >= 2) {
-		spell_clipAction.stop();
-		scene.remove(spell);
-	}
-	spell_mixer.update(delta);
+	// let delta = clock.getDelta();
+
+	// mixer.update(delta);
 	floor.rotateZ(-0.001);
+	
 
 	renderer.render(scene, camera);
 
 }
 
-function createFireBlast(x, y, z, positionKF) {
+function createFireBlast(x, y, z, r) {
 	let fireblast = new THREE.Group();
 	let fireball_loader = new GLTFLoader();
 
-	fireball_loader.load('/models/spells/fireball.glb', function (fireball) {
+	fireball_loader.load('./models/spells/fireball.glb', function (fireball) {
 		let energyball = fireball.scene;
 		fireball.scene.scale.set(2, 2, 2);
 		fireball.scene.position.set(x, y, z);
@@ -222,20 +235,12 @@ function createFireBlast(x, y, z, positionKF) {
 	fireglow.scale.multiplyScalar(1.3);
 	fireblast.add(fireglow);
 	scene.add(fireblast);
-
-	spell_clip = new THREE.AnimationClip('Action', -1, [positionKF]);
-	spell_mixer = new THREE.AnimationMixer(fireblast);
-	spell_clipAction = spell_mixer.clipAction(spell_clip);
-
-	spell_clipAction.addEventListener('finished', function(){
+	setTimeout(function() {
 		scene.remove(fireblast);
-		fireblast = undefined;
-		spell_mixer = undefined;
-		spell_clip = undefined;
-	});
+	}, 1000);
 }
 
-function createWaterPulse(x, y, z, positionKF) {
+function createWaterPulse(x, y, z, r) {
 	// const water_texture = new THREE.TextureLoader().load('textures/ice_crystal.jpg');
 	const pulse = new THREE.TorusGeometry(35, 3);
 	const water = new THREE.MeshBasicMaterial({ color: "#d4f1f9", side: THREE.DoubleSide });
@@ -265,24 +270,16 @@ function createWaterPulse(x, y, z, positionKF) {
 	waterpulse.add(waterpulse1);
 	waterpulse.add(pulseglow);
 	scene.add(waterpulse);
-	
-	spell_clip = new THREE.AnimationClip('Action', -1, [positionKF]);
-	spell_mixer = new THREE.AnimationMixer(waterpulse);
-	spell_clipAction = spell_mixer.clipAction(spell_clip);
-
-	spell_clipAction.addEventListener('finished', function(){
+	setTimeout(function() {
 		scene.remove(waterpulse);
-		waterpulse = undefined;
-		spell_mixer = undefined;
-		spell_clip = undefined;
-	});
+	}, 1000);
 }
 
-function createLeafStorm(x, y, z, positionKF) {
+function createLeafStorm(x, y, z, r) {
 	let leafstorm = new THREE.Group();
 	let tornado_loader = new GLTFLoader();
 
-	tornado_loader.load('/models/spells/leaf_tornado.glb', function (object) {
+	tornado_loader.load('./models/spells/leaf_tornado.glb', function (object) {
 		let tornado = object.scene;
 		object.scene.scale.set(100, 75, 100);
 		object.scene.position.set(x, y, z);
@@ -291,48 +288,37 @@ function createLeafStorm(x, y, z, positionKF) {
 		console.error(error);
 	});
 	scene.add(leafstorm);
-	
-	spell_clip = new THREE.AnimationClip('Action', -1, [positionKF]);
-	spell_mixer = new THREE.AnimationMixer(leafstorm);
-	spell_clipAction = spell_mixer.clipAction(spell_clip);
-
-	spell_clipAction.addEventListener('finished', function(){
+	setTimeout(function() {
 		scene.remove(leafstorm);
-		leafstorm = undefined;
-		spell_mixer = undefined;
-		spell_clip = undefined;
-	});
+	}, 1000);
 }
 
 function launchSpell(spell, user) {
-	let spell_x, spell_y, spell_z, positionKF;
+	let spell_x, spell_y, spell_z, spell_r;
 	if (user == 'player') {
-		spell_x = 150;
+		spell_x = -125;
 		spell_y = 150;
 		spell_z = 0;
-		positionKF = player_spellKF;
+		spell_r = 0;
 	} else {
-		spell_x = -100;
+		spell_x = 125;
 		spell_y = 150;
 		spell_z = 0;
-		positionKF = enemy_spellKF;
+		spell_r = Math.PI;
 	}
 	switch (spell) {
 		case 'fireblast':
-			return createFireBlast(spell_x, spell_y, spell_z, positionKF);
+			return createFireBlast(spell_x, spell_y, spell_z, spell_r);
 		case 'waterpulse':
-			return createWaterPulse(spell_x, spell_y, spell_z, positionKF);
+			return createWaterPulse(spell_x, spell_y, spell_z, spell_r);
 		case 'leafstorm':
-			return createLeafStorm(spell_x, spell_y, spell_z, positionKF);
+			return createLeafStorm(spell_x, spell_y, spell_z, spell_r);
 	}
-	
-	animate();
-
 }
 
 function importWizard() {
 	const fbxLoader = new FBXLoader()
-	fbxLoader.load('/models/Standing Block React Large.fbx', function (wizard) {
+	fbxLoader.load('./models/Standing Block React Large.fbx', function (wizard) {
 		wizard.scale.set(1, 1, 1)
 		wizard.receiveShadow = true;
 		wizard.castShadow = true;
@@ -351,7 +337,7 @@ function importWizard() {
 		scene.add(wizard);
 
 		// let wizard_animations = wizard.animations;
-		// mixer = new THREE.AnimationMixer(wizard);
+		mixer = new THREE.AnimationMixer(wizard);
 
 	}, undefined, function (error) {
 
@@ -361,9 +347,9 @@ function importWizard() {
 }
 
 function importClock() {
-	const clock_texture = new THREE.TextureLoader().load('/textures/clock_base.png');
+	const clock_texture = new THREE.TextureLoader().load('./textures/clock_base.png');
 	const fbxLoader = new FBXLoader()
-	fbxLoader.load('/models/clock.fbx', function (clock) {
+	fbxLoader.load('./models/clock.fbx', function (clock) {
 		clock.scale.set(0.08, 0.08, 0.08);
 		clock.position.set(0, 95, -120);
 		// clock.rotateY(Math.PI / 2);
@@ -387,7 +373,7 @@ function importClock() {
 function importPotions() {
 	const potions = new THREE.Group();
 	const fbxLoader = new FBXLoader()
-	fbxLoader.load('/models/potions/Potion_orange.fbx', function (Potion_orange) {
+	fbxLoader.load('./models/potions/Potion_Orange.fbx', function (Potion_orange) {
 		Potion_orange.scale.set(0.08, 0.08, 0.08);
 		Potion_orange.position.set(-20, 95, 110);
 		Potion_orange.rotateY(0.7);
@@ -399,13 +385,9 @@ function importPotions() {
 			}
 		});
 		potions.add(Potion_orange);
-	}, undefined, function (error) {
-
-		console.error(error);
-
 	});
 	const fbxLoader1 = new FBXLoader()
-	fbxLoader.load('/models/potions/Potion_pink.fbx', function (Potion_pink) {
+	fbxLoader1.load('./models/potions/Potion_Pink.fbx', function (Potion_pink) {
 		Potion_pink.scale.set(0.08, 0.08, 0.08);
 		Potion_pink.position.set(-40, 95, 90);
 		Potion_pink.rotateY(0.2);
@@ -417,13 +399,9 @@ function importPotions() {
 			}
 		});
 		potions.add(Potion_pink);
-	}, undefined, function (error) {
-
-		console.error(error);
-
 	});
 	const fbxLoader2 = new FBXLoader()
-	fbxLoader.load('/models/potions/Potion_blue.fbx', function (Potion_blue) {
+	fbxLoader2.load('./models/potions/Potion_Blue.fbx', function (Potion_blue) {
 		Potion_blue.scale.set(0.08, 0.08, 0.08);
 		Potion_blue.position.set(-60, 95, 110);
 		Potion_blue.rotateY(0.2);
@@ -435,18 +413,14 @@ function importPotions() {
 			}
 		});
 		potions.add(Potion_blue);
-	}, undefined, function (error) {
-
-		console.error(error);
-
 	});
 	scene.add(potions)
 }
 
 function importBook() {
-	const book_texture = new THREE.TextureLoader().load('textures/book.png' );
-	const fbxLoader = new FBXLoader()
-	fbxLoader.load('/models/book/book.fbx', function (book) {
+	const book_texture = new THREE.TextureLoader().load('./textures/book.png' );
+	const fbxLoader = new FBXLoader();
+	fbxLoader.load('./models/book/book.fbx', function (book) {
 		book.scale.set(0.5, 0.5, 0.5);
 		book.position.set(90, 103, 70);
 		book.rotateX(-Math.PI / 2);
